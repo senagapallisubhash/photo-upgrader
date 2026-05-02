@@ -11,35 +11,57 @@ function App() {
     setTimeout(() => {
       setResult(true);
       setLoading(false);
-    }, 1500);
+    }, 1200);
+  };
+
+  const downloadImage = () => {
+    const img = document.getElementById("upgradedImage");
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = img.src;
+
+    image.onload = () => {
+      canvas.width = image.width;
+      canvas.height = image.height;
+
+      ctx.filter = "brightness(1.2) contrast(1.2) saturate(1.3)";
+      ctx.drawImage(image, 0, 0);
+
+      const link = document.createElement("a");
+      link.download = "upgraded-image.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
   };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#f5f7fb",
+        background: "#0f172a",
         padding: "40px",
         fontFamily: "Arial"
       }}
     >
       <div
         style={{
-          maxWidth: "1100px",
+          maxWidth: "1000px",
           margin: "auto",
           background: "white",
-          padding: "40px",
           borderRadius: "20px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          padding: "40px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
           textAlign: "center"
         }}
       >
-        <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
-          Photo Upgrader
-        </h1>
+        <h1>Photo Upgrader</h1>
 
-        <p style={{ color: "gray", marginBottom: "30px" }}>
-          Convert low-quality supplier images into premium ecommerce photos
+        <p style={{ color: "gray" }}>
+          Improve ecommerce product images instantly
         </p>
 
         <input
@@ -54,13 +76,12 @@ function App() {
         <button
           onClick={upgradePhoto}
           style={{
-            background: "black",
+            background: loading ? "#64748b" : "#0f172a",
             color: "white",
-            border: "none",
             padding: "12px 24px",
             borderRadius: "10px",
-            cursor: "pointer",
-            fontSize: "16px"
+            border: "none",
+            cursor: "pointer"
           }}
         >
           {loading ? "Upgrading..." : "Upgrade Photo"}
@@ -68,53 +89,47 @@ function App() {
 
         <div
           style={{
-            marginTop: "50px",
             display: "flex",
             justifyContent: "center",
             gap: "40px",
+            marginTop: "40px",
             flexWrap: "wrap"
           }}
         >
           {image && (
             <div>
-              <h3>Original</h3>
-              <img
-                src={image}
-                width="300"
-                style={{
-                  borderRadius: "15px"
-                }}
-              />
+              <h3>Before</h3>
+              <img src={image} width="300" style={{ borderRadius: "10px" }} />
             </div>
           )}
 
           {image && result && (
             <div>
-              <h3>Upgraded</h3>
+              <h3>After</h3>
               <img
+                id="upgradedImage"
                 src={image}
                 width="300"
                 style={{
-                  borderRadius: "15px",
+                  borderRadius: "10px",
                   filter:
-                    "brightness(1.18) contrast(1.22) saturate(1.35) drop-shadow(0 12px 24px rgba(0,0,0,0.25))"
+                    "brightness(1.2) contrast(1.2) saturate(1.3) drop-shadow(0 10px 20px rgba(0,0,0,0.25))"
                 }}
               />
 
               <br /><br />
 
-              <a href={image} download="premium-photo.jpg">
-                <button
-                  style={{
-                    padding: "10px 18px",
-                    borderRadius: "10px",
-                    border: "1px solid black",
-                    cursor: "pointer"
-                  }}
-                >
-                  Download Image
-                </button>
-              </a>
+              <button
+                onClick={downloadImage}
+                style={{
+                  padding: "10px 18px",
+                  borderRadius: "10px",
+                  border: "1px solid black",
+                  cursor: "pointer"
+                }}
+              >
+                Download Upgraded Image
+              </button>
             </div>
           )}
         </div>
